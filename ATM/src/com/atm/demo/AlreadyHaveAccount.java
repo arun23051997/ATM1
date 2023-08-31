@@ -6,13 +6,13 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 public class AlreadyHaveAccount {
-	static String accountnumber1;
-	static String pass1;
-	static double withdrawamount;
-	static double deposit;
-	static boolean exitFlag = false;
-
-	public static void alreadyHaveAccount() throws SQLException {
+	 String accountnumber1;
+	 String pass1;
+	 double withdrawamount;
+	 double deposit;
+	 boolean exitFlag = false;
+		
+	public  void alreadyHaveAccount() throws SQLException {
 
 		Scanner Scanner = new Scanner(System.in);
 
@@ -20,10 +20,15 @@ public class AlreadyHaveAccount {
 		accountnumber1 = Scanner.next();
 		System.out.println("Enter Your Password : ");
 		pass1 = Scanner.next();
-		Database dt1 = new Database();
-
-		List<String> name = dt1.check(dt1.database());
-
+		Database objectDatabase = new Database();
+		
+	
+		
+		
+		
+		List<String> name = objectDatabase.check(objectDatabase.database(),accountnumber1);
+		
+		
 		String names = name.get(0);
 		String bank = name.get(1);
 
@@ -42,18 +47,18 @@ public class AlreadyHaveAccount {
 			switch (choice) {
 			case 1:
 
-				dt1.checkBalance(dt1.database());
+				objectDatabase.checkBalance(objectDatabase.database(),accountnumber1);
 				break;
 			case 2:
 				System.out.print("Enter deposit amount: ");
 				deposit = Scanner.nextDouble();
-				dt1.performDeposit(dt1.database());
+				objectDatabase.performDeposit(objectDatabase.database(),deposit);
 				break;
 			case 3:
 				System.out.print("Enter withdrawal amount: ");
 				withdrawamount = Scanner.nextDouble();
 
-				dt1.performWithdrawal(dt1.database());
+				objectDatabase.performWithdrawal(objectDatabase.database(),accountnumber1,withdrawamount);
 				break;
 			case 4:
 				System.out.print("Statement");
@@ -67,7 +72,9 @@ public class AlreadyHaveAccount {
 				System.out.println("Please click correct choice!");
 
 			}
-
+			
 		}
+		
+		}
+		
 	}
-}

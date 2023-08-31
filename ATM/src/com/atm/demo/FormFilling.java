@@ -10,7 +10,8 @@ public class FormFilling {
 
 	}
 
-	public void formFilling() throws SQLException {
+	public void formFilling(String bankname1) throws SQLException {
+
 		Scanner scanner = new Scanner(System.in);
 		System.out.println("Ener you name : ");
 		String Name = scanner.next();
@@ -31,8 +32,8 @@ public class FormFilling {
 		System.out.println("Amount : ");
 		double Amount = scanner.nextDouble();
 
-		Database SendDatabase = new Database(Name, Age, Gender, MobileNumber, Adhar, Email, AccountNumber, Pass,
-				Amount);
+		Database SendDatabase = new Database(bankname1, Name, Age, Gender, MobileNumber, Adhar, Email, AccountNumber,
+				Pass, Amount);
 		SendDatabase.insert(SendDatabase.database());
 
 	}

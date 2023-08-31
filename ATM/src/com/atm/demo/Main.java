@@ -5,11 +5,6 @@ import java.util.*;
 import java.util.stream.Collectors;
 import java.util.Scanner;
 
-//
-
-//Decompiled by Procyon v0.5.36
-//
-
 import java.util.Scanner;
 
 public class Main {

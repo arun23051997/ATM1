@@ -10,44 +10,46 @@ import java.util.Scanner;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 
-public class Database extends FormFilling {
+public class Database {
 
-	static String UserSelectBankName;
-	static String Name;
-	static int Age;
-	static String Gender;
-	static String MobileNumber;
-	static String Adhar;
-	static String Email;
-	static String AccountNumber;
-	static String Pass;
-	static Double Amount;
-	static Double balance;
+	 String bankname1;
+	 String Name;
+	 int Age;
+	 String Gender;
+	 String MobileNumber;
+	 String Adhar;
+	 String Email;
+	 String AccountNumber;
+	 String Pass;
+	 Double Amount;
+	 Double balance;
 	Scanner Scanner = new Scanner(System.in);
 
 	public Database() {
 
 	}
 
-	public Database(String name, int age, String gender, String mobileNumber, String adhar, String email,
+	public Database(String bankname1,String name, int age, String gender, String mobileNumber, String adhar, String email,
 			String accountNumber, String pass, double amount)
 
 	{
-
-		Database.Name = name;
-		Database.Age = age;
-		Database.Gender = gender;
-		Database.MobileNumber = mobileNumber;
-		Database.Adhar = adhar;
-		Database.Email = email;
-		Database.AccountNumber = accountNumber;
-		Database.Pass = pass;
-		Database.Amount = amount;
+		this.bankname1=bankname1;
+		this.Name = name;
+		this.Age = age;
+		this.Gender = gender;
+		this.MobileNumber = mobileNumber;
+		this.Adhar = adhar;
+		this.Email = email;
+		this.AccountNumber = accountNumber;
+		this.Pass = pass;
+		this.Amount = amount;
 
 	}
 
+	
+	
 	public Connection database() {
-		Database db = new Database();
+		
 		String url = "jdbc:mysql://localhost:3306/ATM";
 		String username = "root";
 		String password = "Ch@ngep0nd@123";
@@ -67,30 +69,32 @@ public class Database extends FormFilling {
 	}
 
 	public void insert(Connection con) throws SQLException {
+		
 		String qry = "";
 		qry = "insert into Form (Bank,Name,Age,Gender,MobileNumber,Adhar,Email,AccountNumber,Pass,Amount) values(?,?,?,?,?,?,?,?,?,?)";
 		PreparedStatement st = con.prepareStatement(qry);
-		st.setString(1, UserSelectBankName);
-		st.setString(2, Database.Name);
-		st.setInt(3, Database.Age);
-		st.setString(4, Database.Gender);
-		st.setString(5, Database.MobileNumber);
-		st.setString(6, Database.Adhar);
-		st.setString(7, Database.Email);
-		st.setString(8, Database.AccountNumber);
-		st.setString(9, Database.Pass);
-		st.setDouble(10, Database.Amount);
+		
+		st.setString(1, bankname1);
+		st.setString(2, Name);
+		st.setInt(3, Age);
+		st.setString(4, Gender);
+		st.setString(5, MobileNumber);
+		st.setString(6, Adhar);
+		st.setString(7, Email);
+		st.setString(8, AccountNumber);
+		st.setString(9, Pass);
+		st.setDouble(10, Amount);
 		st.executeUpdate();
 		System.out.println("Account created success");
 	}
 
-	public List<String> check(Connection con) throws SQLException {
-
+	public List<String> check(Connection con,String userAccountNumber) throws SQLException {
+		
 		List<String> getNameBank = new ArrayList<>();
 
-		System.out.println("Account Number: " + AlreadyHaveAccount.accountnumber1);
-
-		String qry = "SELECT * FROM Form WHERE AccountNumber =" + AlreadyHaveAccount.accountnumber1;
+		System.out.println("Account Number: " +userAccountNumber);
+		
+		String qry = "SELECT * FROM Form WHERE AccountNumber =" +userAccountNumber;
 		Statement st = con.createStatement();
 
 		ResultSet rs = st.executeQuery(qry);
@@ -106,39 +110,41 @@ public class Database extends FormFilling {
 		return getNameBank;
 
 	}
-
-	void performWithdrawal(Connection con) throws SQLException {
-		AlreadyHaveAccount AlreadyHaveAccount = new AlreadyHaveAccount();
-		String qry = "SELECT * FROM Form WHERE AccountNumber =" + AlreadyHaveAccount.accountnumber1;
+	
+	void performWithdrawal(Connection con,String userAccountNumber,double withdrawamount) throws SQLException {
+//		AlreadyHaveAccount AlreadyHaveAccount = new AlreadyHaveAccount();
+		System.out.println("----------------withdrawal-----------------");
+		String qry = "SELECT * FROM Form WHERE AccountNumber =" +userAccountNumber;
 		Statement st = con.createStatement();
 
 		ResultSet rs = st.executeQuery(qry);
 
 		rs.next();
 		Double name = rs.getDouble("Amount");
-
-		if (name > 0 && AlreadyHaveAccount.withdrawamount < name) {
-			balance = (name - AlreadyHaveAccount.withdrawamount);
+		System.out.println("Your Main Balance" + name);
+		if (name > 0 && withdrawamount < name) {
+			balance = (name - withdrawamount);
+		
 		} else {
 			System.out.println("Insufficiant Balance!!!!");
 		}
-		System.out.println("with draw amount--------" + AlreadyHaveAccount.withdrawamount);
-		System.out.println("balance" + name);
-		System.out.println("balance" + balance);
+		
+		
+		
 
-		qry = "UPDATE Form SET Amount =" + Database.balance + "WHERE AccountNumber ="
-				+ AlreadyHaveAccount.accountnumber1;
+		qry = "UPDATE Form SET Amount =" + balance + "WHERE AccountNumber ="
+				+ userAccountNumber;
 
 		PreparedStatement st1 = con.prepareStatement(qry);
 		st1.executeUpdate(qry);
 
-		System.out.println("Your withdraw amout : " + AlreadyHaveAccount.withdrawamount + "\n"
-				+ "Your balance amount : " + Database.balance);
-		System.out.println("wihtdraw sucess!");
+		System.out.println("Your withdraw amout : " + withdrawamount + "\n"
+				+ "Your balance amount : " + balance);
+		System.out.println("withdraw sucess!");
 	}
 
-	void performDeposit(Connection con) throws SQLException {
-		System.out.println("deposite");
+	void performDeposit(Connection con,double deposit) throws SQLException {
+		System.out.println("----------------deposit-----------------");
 		System.out.println("Which account deposit : ");
 		String accountnumber2 = Scanner.next();
 		String qry = "SELECT * FROM Form WHERE AccountNumber =" + accountnumber2;
@@ -146,7 +152,7 @@ public class Database extends FormFilling {
 		ResultSet rs = st.executeQuery(qry);
 		rs.next();
 		Double name = rs.getDouble("Amount");
-		Double name1 = name + AlreadyHaveAccount.deposit;
+		Double name1 = name + deposit;
 
 		qry = "UPDATE Form SET Amount =" + name1 + "WHERE AccountNumber=" + accountnumber2;
 		PreparedStatement st1 = con.prepareStatement(qry);
@@ -154,9 +160,9 @@ public class Database extends FormFilling {
 		System.out.println("Deposite Success!");
 	}
 
-	void checkBalance(Connection con) throws SQLException {
-		System.out.println("Checkbalance");
-		String qry = "SELECT * FROM Form WHERE AccountNumber =" + AlreadyHaveAccount.accountnumber1;
+	void checkBalance(Connection con,String userAccountNumber) throws SQLException {
+		System.out.println("-------------Checkbalance-----------------");
+		String qry = "SELECT * FROM Form WHERE AccountNumber =" + userAccountNumber;
 		Statement st = con.createStatement();
 		ResultSet rs = st.executeQuery(qry);
 		rs.next();
